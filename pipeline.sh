@@ -1,10 +1,12 @@
 #!/bin/bash
-# Pull latest backend code from master
+
 git pull origin main
 
-# Go to local compose folder
+# Go to local docker-compose folder
 cd ../compose
 
-# Build and start backend container
+# Build backend container
 docker compose build backend
+
+# Restart backend
 docker compose up -d backend
