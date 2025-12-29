@@ -5,12 +5,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  deploy-backend:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout backend code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Run backend deployment script
-        run: ./scripts/deploy-backend.sh
+      - name: Build and run Docker
+        run: docker compose -f docker-compose.yml up --build -d
