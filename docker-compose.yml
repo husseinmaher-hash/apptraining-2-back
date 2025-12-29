@@ -20,7 +20,7 @@ services:
 
   backend:
     build:
-      context: ./apptraining-2-back
+      context: .
       dockerfile: Dockerfile
     container_name: taskapp_backend
     depends_on:
