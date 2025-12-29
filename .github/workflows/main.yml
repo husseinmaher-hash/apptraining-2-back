@@ -14,5 +14,4 @@ jobs:
 
 
       - name: Rebuild Docker
-        run: |
-          docker compose up --build -d backend
+        run: docker compose -f ~/Desktop/Lx/apptraining-2/docker-compose.yml up --build -d
