@@ -1,5 +1,4 @@
-
-name: Backend Local CI/CD
+name: Backend CI/CD
 
 on:
   push:
@@ -7,15 +6,12 @@ on:
 
 jobs:
   deploy:
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest  # GitHub-hosted runner
 
     steps:
-      - name: Pull backend code
-        run: |
-          cd ~/ci/app/apptraining-2-back
-          git pull
+      - name: Checkout backend code
+        uses: actions/checkout@v3
 
       - name: Rebuild backend
         run: |
-          cd ~/ci/app
-          docker compose up --build -d backend
+          docker compose up --build -d
