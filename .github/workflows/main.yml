@@ -1,1 +1,21 @@
 
+name: Backend Local CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull backend code
+        run: |
+          cd ~/ci/app/apptraining-2-back
+          git pull
+
+      - name: Rebuild backend
+        run: |
+          cd ~/ci/app
+          docker compose up --build -d backend
