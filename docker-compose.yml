@@ -34,17 +34,15 @@ services:
       DB_PORT: 5432
     ports:
       - "3002:3002"
-
-  frontend:
-    build:
-      context: ./apptraining-2-front
-      dockerfile: Dockerfile
-    container_name: taskapp_frontend
-    depends_on:
-      - backend
-    ports:
-      - "3001:3001"
-
-volumes:
-  db_data:
-
+#  frontend:
+#    build:
+#      context: ./apptraining-2-front
+#      dockerfile: Dockerfile
+#    container_name: taskapp_frontend
+#    depends_on:
+#      - backend
+#    ports:
+#      - "3001:3001"
+#
+#volumes:
+#  db_data:
