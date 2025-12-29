@@ -5,13 +5,33 @@ on:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest  # GitHub-hosted runner
 
     steps:
-      - name: Checkout backend code
+      # Step 1: Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Rebuild backend
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # choose your Python version
+
+      # Step 3: Install dependencies
+      - name: Install Python dependencies
         run: |
-          docker compose up --build -d
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Optional – run backend tests
+      - name: Run tests
+        run: |
+          # replace with your test command
+          pytest
+
+      # Step 5: Rebuild backend Docker (if needed)
+      - name: Rebuild Docker
+        run: |
+          docker compose up --build -d backend
