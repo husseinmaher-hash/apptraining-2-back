@@ -6,15 +6,12 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set working directory
-        run: cd ..
-
-      - name: Rebuild Docker
-        run: 
-          docker compose -f ../docker-compose.yml up --build -d
+      - name: Build and run Docker
+        working-directory: ${{ github.workspace }}  
+        run: docker compose -f docker-compose.yml up --build -d
