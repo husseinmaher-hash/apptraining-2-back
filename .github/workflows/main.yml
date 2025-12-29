@@ -12,6 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set working directory
+        run: cd ..
 
       - name: Rebuild Docker
         run: 
