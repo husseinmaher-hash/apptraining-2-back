@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build and run Docker
+      - name: Build and run images
         run: docker build -t backend-img .
 
       - name: show images
