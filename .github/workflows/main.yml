@@ -43,5 +43,5 @@ jobs:
         - name: Run docker compose on my device
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            docker compose down
+            docker compose down -v
             docker compose up -d
