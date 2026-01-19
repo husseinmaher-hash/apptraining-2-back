@@ -48,12 +48,22 @@ jobs:
             minikube start --driver=docker
             kubectl apply -f app.yaml
 
-        - name: Wait for pods to be ready
+        - name: Wait for frontend pod to be ready
+                run: |
+                  kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
+
+        - name: Wait for backend pod to be ready
           run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl wait --for=condition=ready pod -l app=frontend --timeout=60s
-            kubectl wait --for=condition=ready pod -l app=backend --timeout=60s
-            kubectl wait --for=condition=ready pod -l app=postgres --timeout=60s
+            kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
+
+        - name: Wait for postgres pod to be ready
+          run: |
+            kubectl wait --for=condition=ready pod -l app=postgres --timeout=120s
+
+        - name: Post-deployment actions
+          run: |
+            echo "All pods are up and running. Proceeding with the next steps."
+
 
         - name: port forward front
           run: |
