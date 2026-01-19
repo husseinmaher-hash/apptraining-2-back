@@ -47,11 +47,14 @@ jobs:
             minikube status || minikube start --driver=docker
 
             kubectl apply -f app.yaml
+            
+            echo "i have this pods ."
+            kubectl get pods --show-labels
+
+
 
         - name: Wait for frontend pod to be ready
           run: |
-              kubectl get pods --show-labels
-
               kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
 
         - name: Wait for backend pod to be ready
@@ -71,17 +74,17 @@ jobs:
         - name: port forward front
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/frontend 3001:3001
+            kubectl port-forward svc/frontend 3001:3001&
 
         - name: port forward back
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/backend 3002:3002
+            kubectl port-forward svc/backend 3002:3002&
 
         - name: port forward postgres
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/postgres 5432:5432
+            kubectl port-forward svc/postgres 5432:5432&
 
 
 
