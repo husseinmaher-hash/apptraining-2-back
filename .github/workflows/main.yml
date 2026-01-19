@@ -65,6 +65,7 @@ jobs:
             echo "All pods are up and running. Proceeding with the next steps."
 
 
+
         - name: port forward front
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
