@@ -50,6 +50,8 @@ jobs:
 
         - name: Wait for frontend pod to be ready
           run: |
+              kubectl get pods --show-labels
+
               kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
 
         - name: Wait for backend pod to be ready
