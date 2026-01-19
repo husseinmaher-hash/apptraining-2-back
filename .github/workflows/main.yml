@@ -32,38 +32,71 @@ jobs:
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/backend-img:latest
 
-deploy-on-device:
-  runs-on: self-hosted
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+  deploy-on-device:
+    runs-on: self-hosted
 
-    - name: Deploy to Kubernetes and wait for pods
-      run: |
-        cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v3
 
-        minikube start --driver=docker
-        kubectl apply -f app.yaml
+        - name: Deploy to Kubernetes
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
 
-        echo "Waiting for pods to be ready..."
-        kubectl wait --for=condition=ready pod -l app=frontend --timeout=300s
-        kubectl wait --for=condition=ready pod -l app=backend --timeout=300s
-        kubectl wait --for=condition=ready pod -l app=postgres --timeout=300s
+            minikube delete
+            minikube start --driver=docker
+            kubectl apply -f app.yaml
 
-        echo "All pods are ready!"
+        - name: Wait for frontend pod to be ready
+          run: |
+              kubectl get pods --show-labels
 
-        echo "Port forwarding frontend, backend, and postgres in background..."
-        kubectl port-forward svc/frontend 3001:3001 &
-        kubectl port-forward svc/backend 3002:3002 &
-        kubectl port-forward svc/postgres 5432:5432 &
+              kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
 
-    - name: Initialize database
-      run: |
-        cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-        kubectl exec -i $(kubectl get pods -l app=postgres -o name) -- psql -U admin -d taskapp < init.sql
+        - name: Wait for backend pod to be ready
+          run: |
+            kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
 
-    - name: Get frontend URL
-      run: |
-        cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-        minikube service frontend --url
+        - name: Wait for postgres pod to be ready
+          run: |
+            kubectl wait --for=condition=ready pod -l app=postgres --timeout=120s
+
+        - name: Post-deployment actions
+          run: |
+            echo "All pods are up and running. Proceeding with the next steps."
+
+
+
+        - name: port forward front
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            kubectl port-forward svc/frontend 3001:3001
+
+        - name: port forward back
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            kubectl port-forward svc/backend 3002:3002
+
+        - name: port forward postgres
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            kubectl port-forward svc/postgres 5432:5432
+
+
+
+
+        - name: get database
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            kubectl exec -i $(kubectl get pods -l app=postgres -o name) -- psql -U admin -d taskapp < init.sql
+
+
+        - name: run frontend Service 
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            minikube service frontend --url
+
+
+
+
