@@ -44,8 +44,8 @@ jobs:
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
 
-            minikube delete
-            minikube start --driver=docker
+            minikube status || minikube start --driver=docker
+
             kubectl apply -f app.yaml
 
         - name: Wait for frontend pod to be ready
