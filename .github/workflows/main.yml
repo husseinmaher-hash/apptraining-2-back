@@ -91,7 +91,7 @@ jobs:
 
         - name: get database
           run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2/apptraining-2-back"
             kubectl exec -i $(kubectl get pods -l app=postgres -o name) -- psql -U admin -d taskapp < init.sql
 
 
