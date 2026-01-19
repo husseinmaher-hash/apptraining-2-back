@@ -98,7 +98,7 @@ jobs:
         - name: run frontend Service 
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            minikube service frontend --url
+            minikube service frontend --url&
 
 
 
