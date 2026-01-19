@@ -40,8 +40,8 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v3
 
-        - name: Run docker compose on my device
+        - name: Deploy to Kubernetes
           run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            docker compose down -v
-            docker compose up -d
+            kubectl apply -f app.yaml
+            kubectl rollout restart deployment frontend
+            kubectl rollout restart deployment backend
