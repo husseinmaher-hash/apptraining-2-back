@@ -47,9 +47,7 @@ jobs:
             minikube delete
             minikube start --driver=docker
             kubectl apply -f app.yaml
-            kubectl port-forward svc/postgres 5432:5432 &
-            kubectl port-forward svc/frontend 3001:3001 &
-            kubectl port-forward svc/backend 3002:3002 &
+
 
         - name: get database
           run: |
