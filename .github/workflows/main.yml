@@ -42,6 +42,6 @@ jobs:
 
         - name: Deploy to Kubernetes
           run: |
-            kubectl apply -f app.yaml
+            kubectl apply -f ../app.yaml
             kubectl rollout restart deployment frontend
             kubectl rollout restart deployment backend
