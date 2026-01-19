@@ -42,6 +42,25 @@ jobs:
 
         - name: Deploy to Kubernetes
           run: |
-            kubectl apply -f ../app.yaml
-            kubectl rollout restart deployment frontend
-            kubectl rollout restart deployment backend
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+
+            minikube delete
+            minikube start --driver=docker
+            kubectl apply -f app.yaml
+            kubectl port-forward 
+
+
+        - name: get database
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            kubectl exec -i $(kubectl get pods -l app=postgres -o name) -- psql -U admin -d taskapp < init.sql
+
+
+        - name: run frontend Service 
+          run: |
+            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+            minikube service frontend
+
+
+
+
