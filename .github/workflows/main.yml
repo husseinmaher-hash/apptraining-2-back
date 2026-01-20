@@ -89,10 +89,15 @@ jobs:
 
 
 
-        - name: get database
+        - name: Init database
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2/apptraining-2-back"
-            kubectl exec -i $(kubectl get pods -l app=postgres -o name) -- psql -U admin -d taskapp < init.sql
+
+            POD=$(kubectl get pods -l app=postgres -o name | head -n 1)
+
+            kubectl exec -i $POD \
+              -c postgres \
+              -- psql -U admin -d taskapp < init.sql
 
 
         - name: run frontend Service 
