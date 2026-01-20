@@ -16,10 +16,15 @@ const pool = new Pool({
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "*" })); // allow all origins
 app.use(express.json());
 
 // Routes
+
+// Health check
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
 
 // Get all tasks
 app.get('/api/tasks', async (req, res) => {
@@ -28,7 +33,7 @@ app.get('/api/tasks', async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
@@ -43,7 +48,7 @@ app.post('/api/tasks', async (req, res) => {
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
@@ -59,7 +64,7 @@ app.put('/api/tasks/:id', async (req, res) => {
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
@@ -71,10 +76,10 @@ app.delete('/api/tasks/:id', async (req, res) => {
     res.status(204).send();
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err.message });
   }
 });
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Backend running on port ${port}`);
 });
