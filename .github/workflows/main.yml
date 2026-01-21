@@ -46,8 +46,8 @@ jobs:
             VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            chmod +x ./scripts/fetch-vault-env.sh
-            ./scripts/fetch-vault-env.sh
+            chmod +x ./fetch-vault-env.sh
+            ./fetch-vault-env.sh
 
 
         - name: Run docker compose on my device
