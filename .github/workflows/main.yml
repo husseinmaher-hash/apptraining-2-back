@@ -40,6 +40,22 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v3
 
+        - name: Install Vault CLI
+          run: |
+                cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
+                curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+                echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+                sudo apt update && sudo apt install -y vault
+
+        - name: Run Vault secrets script
+          env:
+            VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+            VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+          run: |
+            chmod +x ./scripts/fetch-vault-env.sh
+            ./scripts/fetch-vault-env.sh
+
+
         - name: Run docker compose on my device
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
