@@ -40,71 +40,8 @@ jobs:
         - name: Checkout repository
           uses: actions/checkout@v3
 
-        - name: Deploy to Kubernetes
+        - name: Run docker compose on my device
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-
-            minikube status || minikube start --driver=docker
-
-            kubectl apply -f app.yaml
-            
-            echo "i have this pods ."
-            kubectl get pods --show-labels
-
-
-
-        - name: Wait for frontend pod to be ready
-          run: |
-              kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
-
-        - name: Wait for backend pod to be ready
-          run: |
-            kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
-
-        - name: Wait for postgres pod to be ready
-          run: |
-            kubectl wait --for=condition=ready pod -l app=postgres --timeout=120s
-
-        - name: Post-deployment actions
-          run: |
-            echo "All pods are up and running. Proceeding with the next steps."
-
-
-
-        - name: port forward front
-          run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/frontend 3001:3001&
-
-        - name: port forward back
-          run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/backend 3002:3002&
-
-        - name: port forward postgres
-          run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            kubectl port-forward svc/postgres 5432:5432&
-
-
-
-
-        - name: Init database
-          run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2/apptraining-2-back"
-
-            POD=$(kubectl get pods -l app=postgres -o name | head -n 1)
-
-            kubectl exec -i $POD \
-              -c postgres \
-              -- psql -U admin -d taskapp < init.sql
-
-
-        - name: run frontend Service 
-          run: |
-            cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            minikube service frontend --url&
-
-
-
-
+            docker compose down -v
+            docker compose up -d
