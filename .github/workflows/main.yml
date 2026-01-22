@@ -12,33 +12,48 @@ jobs:
 
   build-and-publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated to v4 for 2026
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/backend-img:latest .
-
-      - name: Push Docker image
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/backend-img:latest
-
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/backend-img:latest
 
   deploy-on-device:
     runs-on: self-hosted
+    needs: build-and-publish # Ensures build finishes first
 
     steps:
         - name: Checkout repository
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
+
+        - name: Prepare Device and Config Files
+          run: |
+            # 1. Define target directory
+            TARGET_DIR="/home/hussein-maher/Desktop/Lx/apptraining-2"
+            
+            # 2. Delete the "fake" folder Docker created if it exists
+            if [ -d "$TARGET_DIR/prometheus.yml" ]; then
+               sudo rm -rf "$TARGET_DIR/prometheus.yml"
+            fi
+
+            # 3. Copy the real config files from GitHub workspace to project folder
+            cp prometheus.yml "$TARGET_DIR/"
+            cp vault-config.hcl "$TARGET_DIR/"
+            
+            # 4. Fix permissions
+            chmod +x "$TARGET_DIR/fetch-vault-env.sh"
 
         - name: Run Vault secrets script
           env:
@@ -46,12 +61,11 @@ jobs:
             VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            chmod +x ./fetch-vault-env.sh
             ./fetch-vault-env.sh
-
 
         - name: Run docker compose on my device
           run: |
             cd "/home/hussein-maher/Desktop/Lx/apptraining-2"
-            docker compose down -v
+            # Cleanup old containers and orphans to avoid port conflicts
+            docker compose down -v --remove-orphans
             docker compose up -d
